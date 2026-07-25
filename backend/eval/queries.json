@@ -1,0 +1,105 @@
+{
+  "_readme": "Ground truth for each query was derived from objective corpus metadata (category/cuisine columns, or an exact substring match), not from eyeballing search results -- see backend/eval/README.md for the exact derivation and the two manual corrections applied after a review pass caught mistagged community tags ('Curry' on a plain pasta dish and on jerk chicken).",
+  "queries": [
+    {
+      "query": "gochujang",
+      "note": "exact ingredient term; full_text ILIKE '%gochujang%'",
+      "expected_ids": ["52951"]
+    },
+    {
+      "query": "harissa",
+      "note": "exact ingredient term; full_text ILIKE '%harissa%'",
+      "expected_ids": ["52850", "52870", "53091", "52918", "52973", "52797", "52817", "52972"]
+    },
+    {
+      "query": "chicken curry",
+      "note": "category='Chicken' AND (title curry OR 'Curry' tag); 1 mistagged item (Jerk chicken) manually excluded",
+      "expected_ids": ["53453", "53345", "52820", "52851", "53192", "53204", "53498", "52814"]
+    },
+    {
+      "query": "vegetarian curry",
+      "note": "category='Vegetarian' AND (title curry OR 'Curry' tag); 1 mistagged item (Spicy Arrabiata Penne) manually excluded",
+      "expected_ids": ["52785", "52868", "52865"]
+    },
+    {
+      "query": "indian curry",
+      "note": "cuisine ILIKE '%india%' AND (title curry OR 'Curry' tag)",
+      "expected_ids": ["52785", "52868", "52805", "52808", "52865", "52851"]
+    },
+    {
+      "query": "seafood curry",
+      "note": "category='Seafood' AND (title curry OR 'Curry' tag)",
+      "expected_ids": ["53495", "53451", "53362", "53195", "53205"]
+    },
+    {
+      "query": "italian pasta",
+      "note": "cuisine='Italian' AND (category='Pasta' OR title ILIKE '%pasta%')",
+      "expected_ids": ["52839", "53064", "52835", "52844", "52777", "52837", "52982", "52838"]
+    },
+    {
+      "query": "quick pasta dinner",
+      "note": "category='Pasta'",
+      "expected_ids": ["52839", "52829", "53064", "52835", "52987", "52844", "53461", "53504", "52837", "52982", "53093", "52838"]
+    },
+    {
+      "query": "french dessert",
+      "note": "cuisine='France' AND category='Dessert'",
+      "expected_ids": ["52910", "52776", "52905", "52916", "52917", "52909"]
+    },
+    {
+      "query": "chocolate dessert",
+      "note": "category='Dessert' AND title ILIKE '%chocolate%'",
+      "expected_ids": ["53279", "53475", "53320", "52853", "52966", "53170", "53101", "53324", "52776", "52860", "52905", "52787", "53224", "53295", "52917"]
+    },
+    {
+      "query": "chocolate cake",
+      "note": "title ILIKE '%chocolate%' AND (title ILIKE '%cake%' OR 'Cake' tag)",
+      "expected_ids": ["52776", "53224", "53295", "52794"]
+    },
+    {
+      "query": "british pie",
+      "note": "cuisine='British' AND (title ILIKE '%pie%' OR 'Pie' tag)",
+      "expected_ids": ["52874", "52878", "52875", "53005", "53098", "52802", "52877", "52880", "52991", "52876", "52881", "52882"]
+    },
+    {
+      "query": "japanese sushi",
+      "note": "cuisine='Japanese' AND title ILIKE '%sushi%' -- deliberately a 1-result needle-in-haystack case",
+      "expected_ids": ["53065"]
+    },
+    {
+      "query": "hearty stew to warm you up",
+      "note": "category IN ('Beef','Lamb','Pork') AND title ILIKE '%stew%'",
+      "expected_ids": ["52873", "53469", "53018", "53300", "53482", "53126", "53166", "53058", "52781", "53412", "53211"]
+    },
+    {
+      "query": "soup to warm up with",
+      "note": "'Soup' tag (manually reviewed, all 26 entries confirmed genuine)",
+      "expected_ids": ["53078", "52842", "53077", "53168", "52977", "53122", "53058", "52955", "53079", "52903", "52954", "52973", "53047", "53059", "52922", "52941", "53020", "52981", "52925", "53195", "53214", "53194", "53210", "53196", "53057", "52972"]
+    },
+    {
+      "query": "spicy thai food",
+      "note": "cuisine='Thai' AND (title spicy OR instructions mentions chilli/chili OR 'Spicy' tag)",
+      "expected_ids": ["53193", "53211", "52827", "53191", "53192", "53200", "53209", "53201", "53212", "53199", "53206", "53195", "53198", "53194", "53210", "53203", "53202", "53207", "53196"]
+    },
+    {
+      "query": "vegan meal",
+      "note": "category='Vegan'",
+      "expected_ids": ["53092", "53150", "53115", "52942", "52775", "53250", "52794"]
+    },
+    {
+      "query": "pancakes for breakfast",
+      "note": "title ILIKE '%pancake%'",
+      "expected_ids": ["52855", "53316", "53080", "53379", "53413", "53502", "53331", "52854", "53022"]
+    },
+    {
+      "query": "turkish cuisine",
+      "note": "cuisine='Turkish' -- single-column categorical match, no tag involved",
+      "expected_ids": ["53262", "53278", "53276", "53267", "53279", "53256", "53261", "53265", "52977", "53254", "53266", "53258", "53274", "53272", "53255", "53269", "53253", "53257", "52978", "53277", "53268", "53273", "53260", "53259", "53264", "53275", "53263", "53252", "53270", "53271"]
+    },
+    {
+      "query": "jamaican dish",
+      "note": "cuisine='Jamaican' -- single-column categorical match, no tag involved",
+      "expected_ids": ["52940", "53361", "52939", "53360", "53350", "52944", "53346", "53351", "52938", "53353", "53363", "53345", "53354", "53362", "53355", "53356", "53352", "53349", "53357", "53348", "53364", "53344", "52937", "53347", "52943", "52941", "52936"]
+    }
+  ]
+}

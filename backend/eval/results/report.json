@@ -1,0 +1,151 @@
+{
+  "k": 5,
+  "num_queries": 20,
+  "mean_precision": {
+    "semantic": 0.6599999999999999,
+    "hybrid": 0.74,
+    "hybrid+rerank": 0.49000000000000005
+  },
+  "per_query": [
+    {
+      "query": "gochujang",
+      "expected_count": 1,
+      "semantic": 0.0,
+      "hybrid": 0.2,
+      "hybrid+rerank": 0.0
+    },
+    {
+      "query": "harissa",
+      "expected_count": 8,
+      "semantic": 0.4,
+      "hybrid": 0.4,
+      "hybrid+rerank": 0.4
+    },
+    {
+      "query": "chicken curry",
+      "expected_count": 8,
+      "semantic": 1.0,
+      "hybrid": 1.0,
+      "hybrid+rerank": 0.8
+    },
+    {
+      "query": "vegetarian curry",
+      "expected_count": 3,
+      "semantic": 0.2,
+      "hybrid": 0.6,
+      "hybrid+rerank": 0.2
+    },
+    {
+      "query": "indian curry",
+      "expected_count": 6,
+      "semantic": 0.6,
+      "hybrid": 0.6,
+      "hybrid+rerank": 0.2
+    },
+    {
+      "query": "seafood curry",
+      "expected_count": 5,
+      "semantic": 0.6,
+      "hybrid": 1.0,
+      "hybrid+rerank": 0.2
+    },
+    {
+      "query": "italian pasta",
+      "expected_count": 8,
+      "semantic": 0.8,
+      "hybrid": 1.0,
+      "hybrid+rerank": 0.8
+    },
+    {
+      "query": "quick pasta dinner",
+      "expected_count": 12,
+      "semantic": 0.6,
+      "hybrid": 0.6,
+      "hybrid+rerank": 0.6
+    },
+    {
+      "query": "french dessert",
+      "expected_count": 6,
+      "semantic": 0.8,
+      "hybrid": 0.8,
+      "hybrid+rerank": 0.2
+    },
+    {
+      "query": "chocolate dessert",
+      "expected_count": 15,
+      "semantic": 1.0,
+      "hybrid": 0.8,
+      "hybrid+rerank": 0.8
+    },
+    {
+      "query": "chocolate cake",
+      "expected_count": 4,
+      "semantic": 0.2,
+      "hybrid": 0.6,
+      "hybrid+rerank": 0.4
+    },
+    {
+      "query": "british pie",
+      "expected_count": 12,
+      "semantic": 1.0,
+      "hybrid": 1.0,
+      "hybrid+rerank": 0.8
+    },
+    {
+      "query": "japanese sushi",
+      "expected_count": 1,
+      "semantic": 0.2,
+      "hybrid": 0.2,
+      "hybrid+rerank": 0.0
+    },
+    {
+      "query": "hearty stew to warm you up",
+      "expected_count": 11,
+      "semantic": 0.6,
+      "hybrid": 0.6,
+      "hybrid+rerank": 0.6
+    },
+    {
+      "query": "soup to warm up with",
+      "expected_count": 26,
+      "semantic": 1.0,
+      "hybrid": 1.0,
+      "hybrid+rerank": 0.6
+    },
+    {
+      "query": "spicy thai food",
+      "expected_count": 19,
+      "semantic": 1.0,
+      "hybrid": 1.0,
+      "hybrid+rerank": 0.2
+    },
+    {
+      "query": "vegan meal",
+      "expected_count": 7,
+      "semantic": 0.6,
+      "hybrid": 0.6,
+      "hybrid+rerank": 0.4
+    },
+    {
+      "query": "pancakes for breakfast",
+      "expected_count": 9,
+      "semantic": 0.6,
+      "hybrid": 1.0,
+      "hybrid+rerank": 0.8
+    },
+    {
+      "query": "turkish cuisine",
+      "expected_count": 30,
+      "semantic": 1.0,
+      "hybrid": 1.0,
+      "hybrid+rerank": 1.0
+    },
+    {
+      "query": "jamaican dish",
+      "expected_count": 27,
+      "semantic": 1.0,
+      "hybrid": 0.8,
+      "hybrid+rerank": 0.8
+    }
+  ]
+}

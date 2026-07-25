@@ -19,8 +19,6 @@ dist/
 *.cache/
 .cache/
 backend/app/ingestion/data/*.cache
-backend/eval/results/*.json
-!backend/eval/results/.gitkeep
 model_cache/
 huggingface_cache/
 
