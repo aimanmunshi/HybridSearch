@@ -31,7 +31,10 @@ KEYWORD_SEARCH_SQL = """
     SELECT
         id, title, cuisine, category, tags, thumbnail_url,
         ts_rank_cd(search_vector, query) AS rank,
-        left(full_text, 500) AS snippet_source
+        -- `instructions`, not `full_text`: full_text is header-prefixed
+        -- (title | cuisine | category | tags), which would duplicate the
+        -- title and cuisine already shown alongside the snippet in the UI.
+        left(instructions, 500) AS snippet_source
     FROM recipes, websearch_to_tsquery('english', %(query)s) AS query
     WHERE search_vector @@ query
     ORDER BY rank DESC

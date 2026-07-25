@@ -1,5 +1,30 @@
 @import "tailwindcss";
 
+@theme {
+  /* Chalkboard bistro menu: a slate-charcoal board, chalk-cream ink, and the
+     two pigments a spice rack actually has -- chili red and turmeric yellow --
+     rather than a single neon accent on black. */
+  --color-board: #1c2822;
+  --color-board-raised: #263630;
+  --color-board-line: #33453d;
+  --color-chalk: #f3efe4;
+  --color-chalk-dim: #aab6ad;
+  --color-chili: #e0552f;
+  --color-chili-dim: #b8461f;
+  --color-turmeric: #eaa93f;
+  --color-sage: #7fa88f;
+
+  --font-display: "Caveat", cursive;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
 body {
   margin: 0;
+  background: var(--color-board);
+  /* A faint chalk-dust texture: two overlaid radial specks, tiled. */
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(243, 239, 228, 0.025) 0, transparent 40%),
+    radial-gradient(circle at 75% 65%, rgba(243, 239, 228, 0.02) 0, transparent 35%);
+  background-size: 480px 480px, 620px 620px;
 }
