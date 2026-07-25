@@ -38,6 +38,11 @@ def get_pool() -> ConnectionPool:
             max_size=10,
             configure=_configure,
             open=True,
+            # psycopg_pool's default is 30s. If Postgres is unreachable, that
+            # turns every in-flight request into a 30-second hang before the
+            # client sees anything -- worse than just failing fast with a
+            # clean 500 from the global exception handler.
+            timeout=5,
         )
     return _pool
 

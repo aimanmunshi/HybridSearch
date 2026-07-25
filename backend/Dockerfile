@@ -9,6 +9,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
+# CPU-only torch wheel first: the default PyPI build bundles CUDA libraries
+# (multi-GB) this project never uses, since embeddings and reranking both run
+# on CPU. Installing it from PyTorch's CPU index before requirements.txt
+# means sentence-transformers' own torch dependency is already satisfied and
+# never pulls the GPU build in.
+RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .

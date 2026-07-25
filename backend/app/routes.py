@@ -1,9 +1,10 @@
 """API route definitions."""
 import time
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, Request
 
 from app.models.search import SearchResponse
+from app.rate_limit import limiter
 from app.search.hybrid import DEFAULT_ALPHA, hybrid_search
 from app.search.keyword import keyword_search
 from app.search.rerank import rerank as rerank_candidates
@@ -15,6 +16,11 @@ from app.search.semantic import semantic_search
 RERANK_CANDIDATE_MULTIPLIER = 3
 MIN_RERANK_CANDIDATES = 20
 
+# Generous enough for real interactive use (a person typing and re-searching)
+# while still bounding the worst case: every search endpoint does at least one
+# embedding call, which is the most expensive thing this API does per request.
+SEARCH_RATE_LIMIT = "30/minute"
+
 router = APIRouter(prefix="/search", tags=["search"])
 
 QueryParam = Query(..., min_length=1, max_length=300, description="Natural-language query")
@@ -22,21 +28,25 @@ TopKParam = Query(10, ge=1, le=50, description="Number of recipes to return")
 
 
 @router.get("/semantic", response_model=SearchResponse)
-def search_semantic(q: str = QueryParam, top_k: int = TopKParam):
+@limiter.limit(SEARCH_RATE_LIMIT)
+def search_semantic(request: Request, q: str = QueryParam, top_k: int = TopKParam):
     """Pure vector similarity search -- no keyword matching involved."""
     results, took_ms = semantic_search(q, top_k=top_k)
     return SearchResponse(query=q, mode="semantic", results=results, took_ms=took_ms)
 
 
 @router.get("/keyword", response_model=SearchResponse)
-def search_keyword(q: str = QueryParam, top_k: int = TopKParam):
+@limiter.limit(SEARCH_RATE_LIMIT)
+def search_keyword(request: Request, q: str = QueryParam, top_k: int = TopKParam):
     """Pure Postgres full-text search -- no embeddings involved."""
     results, took_ms = keyword_search(q, top_k=top_k)
     return SearchResponse(query=q, mode="keyword", results=results, took_ms=took_ms)
 
 
 @router.get("/hybrid", response_model=SearchResponse)
+@limiter.limit(SEARCH_RATE_LIMIT)
 def search_hybrid(
+    request: Request,
     q: str = QueryParam,
     top_k: int = TopKParam,
     alpha: float = Query(

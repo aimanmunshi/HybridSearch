@@ -1,12 +1,19 @@
 """FastAPI application entrypoint for the semantic search engine."""
+import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
 from app.config import settings
 from app.db.connection import close_pool, healthcheck
+from app.rate_limit import limiter
 from app.routes import router
+
+logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
@@ -27,6 +34,9 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
@@ -34,6 +44,20 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(request: Request, exc: Exception):
+    """Log the real error server-side, never leak internals to the client.
+
+    Without this, an unexpected failure (e.g. the DB connection dropping
+    mid-query) would bubble up as FastAPI's default 500 page, which in debug
+    contexts can include a stack trace -- fine for local development, not for
+    something meant to look production-shaped.
+    """
+    logger.exception("unhandled exception on %s %s", request.method, request.url.path)
+    return JSONResponse(status_code=500, content={"detail": "Internal server error"})
+
 
 app.include_router(router)
 

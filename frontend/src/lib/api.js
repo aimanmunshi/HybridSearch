@@ -12,10 +12,14 @@ export async function search(mode, query, { topK = 10, rerank = false } = {}) {
   const response = await fetch(`${BASE}/${mode}?${params}`);
   if (!response.ok) {
     const body = await response.json().catch(() => null);
-    const detail = body?.detail;
+    // FastAPI validation/handler errors use `detail`; slowapi's 429 uses `error`.
+    const detail = body?.detail ?? body?.error;
     const message = Array.isArray(detail)
       ? detail.map((d) => d.msg).join("; ")
-      : detail || `Search failed (${response.status})`;
+      : detail ||
+        (response.status === 429
+          ? "Too many searches, slow down a moment."
+          : `Search failed (${response.status})`);
     throw new Error(message);
   }
   return response.json();
