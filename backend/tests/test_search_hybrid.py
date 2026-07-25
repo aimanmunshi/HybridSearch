@@ -138,3 +138,23 @@ def test_endpoint_rejects_alpha_out_of_range():
         response = client.get("/search/hybrid", params={"q": "harissa", "alpha": 1.5})
 
     assert response.status_code == 422
+
+
+def test_endpoint_rerank_toggle_is_wired_up(monkeypatch):
+    """Verify the route actually calls reranking, without loading the real model."""
+    from app.search import rerank as rerank_module
+
+    monkeypatch.setattr(
+        rerank_module,
+        "rerank",
+        lambda query, candidates, top_k: candidates[:top_k],
+    )
+    # routes.py imported `rerank` by name, so the route's own reference must
+    # be patched too -- patching the source module alone wouldn't reach it.
+    monkeypatch.setattr("app.routes.rerank_candidates", rerank_module.rerank)
+
+    with TestClient(app) as client:
+        response = client.get("/search/hybrid", params={"q": "harissa", "rerank": True})
+
+    assert response.status_code == 200
+    assert response.json()["mode"] == "hybrid+rerank"
