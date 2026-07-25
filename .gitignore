@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# Env
+.env
+.env.local
+
+# Embedding / model caches
+*.cache/
+.cache/
+backend/app/ingestion/data/*.cache
+backend/eval/results/*.json
+!backend/eval/results/.gitkeep
+model_cache/
+huggingface_cache/
+
+# Postgres data volume (bind mount if used)
+pgdata/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs
+*.log
