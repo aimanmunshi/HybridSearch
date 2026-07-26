@@ -50,8 +50,9 @@ flowchart LR
   is a swappable alternative behind the same interface (`USE_OPENAI_EMBEDDINGS=true`)
 - **Reranking:** `cross-encoder/ms-marco-MiniLM-L-6-v2`, optional, toggleable
 - **Frontend:** React (Vite) + Tailwind CSS v4
-- **Containerization:** Docker Compose (Postgres verified in-container;
-  see [Known limitation](#known-limitation-docker-compose-up-for-the-backendfrontend-containers))
+- **Containerization:** Docker Compose, all three services (Postgres,
+  backend, frontend) verified building and running healthy via
+  `docker compose up --build`
 
 ## Quickstart
 
@@ -68,9 +69,8 @@ image, which bundles PyTorch):
 docker compose up --build
 ```
 
-**Option B — native dev commands** (what was actually used throughout
-development; see [Known limitation](#known-limitation-docker-compose-up-for-the-backendfrontend-containers)
-below for why):
+**Option B — native dev commands** (also fully verified; useful for faster
+iteration since code changes don't require a rebuild):
 
 ```bash
 docker compose up -d postgres   # Postgres + pgvector only
@@ -104,27 +104,16 @@ cd backend
 python -m eval.run_eval
 ```
 
-### Known limitation: `docker compose up` for the backend/frontend containers
-
-`docker-compose.yml` defines all three services (Postgres, backend,
-frontend), and Postgres-in-Docker (with the pgvector extension) was verified
-extensively throughout development. The backend and frontend **container
-builds were not successfully completed** in this development environment:
-the machine's system drive repeatedly ran out of disk space mid-build (a
-pre-existing, unrelated 12GB file elsewhere on that disk, not anything this
-project created) and crashed Docker Desktop twice before the build could
-finish. The backend Dockerfile was updated to install CPU-only torch (see
-`backend/Dockerfile`) specifically to reduce that footprint, but a full,
-successful `docker compose up --build` for all three services together was
-not re-confirmed after that fix.
-
-What *was* verified end-to-end, repeatedly, throughout development: the
-backend and frontend running via their native dev commands (`uvicorn`,
-`npm run dev`) against Postgres in Docker, including the full search UI
-tested live in-browser (all four modes, mobile viewport, error states). This
-is the Quickstart path above. If `docker compose up --build` fails on disk
-space for you, that native-dev-command path is the tested fallback, not a
-downgrade.
+Both paths are verified working end-to-end: `docker compose up --build`
+brings up all three containers (Postgres, backend, frontend) healthy, and the
+backend/frontend were separately verified extensively via their native dev
+commands throughout development, including the full search UI tested live
+in-browser (all four modes, mobile viewport, error states). Note: an earlier
+revision of this README documented the full container build as unverified,
+blocked by the development machine's system drive repeatedly running out of
+disk space (root cause: an unrelated 12GB file already on that machine, not
+anything this project created). That's resolved — `docker compose up --build`
+now completes cleanly and all three containers report healthy.
 
 ## Screenshots
 
@@ -223,5 +212,3 @@ generated dataset wouldn't have produced convincingly.
 - **CI.** GitHub Actions running `pytest` (with an ephemeral Postgres service
   container) and the frontend build on every push — straightforward, just
   not built yet.
-- **Full `docker compose up` re-verification** once off this development
-  machine's disk constraints, as noted above.
