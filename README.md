@@ -104,16 +104,22 @@ cd backend
 python -m eval.run_eval
 ```
 
-Both paths are verified working end-to-end: `docker compose up --build`
-brings up all three containers (Postgres, backend, frontend) healthy, and the
-backend/frontend were separately verified extensively via their native dev
-commands throughout development, including the full search UI tested live
-in-browser (all four modes, mobile viewport, error states). Note: an earlier
-revision of this README documented the full container build as unverified,
-blocked by the development machine's system drive repeatedly running out of
-disk space (root cause: an unrelated 12GB file already on that machine, not
-anything this project created). That's resolved — `docker compose up --build`
-now completes cleanly and all three containers report healthy.
+Both paths are now verified working end-to-end, including search actually
+run through the browser UI in each case — not just the containers reporting
+healthy. That distinction matters: an earlier pass here declared the
+Docker path "verified" after confirming the containers built, started
+healthy, and the backend API worked when queried directly — but every
+in-browser search through the Dockerized frontend was 502ing. The cause:
+Vite's dev-server proxy was hardcoded to `http://localhost:8000`, which is
+correct when frontend and backend both run natively on the host, but inside
+the frontend *container*, `localhost` resolves to that container itself, not
+the backend container — so every proxied request failed even though the
+backend was perfectly healthy one hop away. Fixed by making the proxy target
+configurable (`VITE_API_PROXY_TARGET`, set to `http://backend:8000` — the
+Compose service's DNS name — for the containerized path, defaulting to
+`localhost:8000` for native dev). Worth remembering: a container reporting
+"healthy" only proves its own process started, not that it can reach its
+neighbors.
 
 ## Screenshots
 
